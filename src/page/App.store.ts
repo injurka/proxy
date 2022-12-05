@@ -1,5 +1,6 @@
 interface Params {
   defaultValue: number;
+  setValueHandler?: any;
 }
 
 export class ControlStore {
@@ -9,18 +10,20 @@ export class ControlStore {
 
   constructor(params: Params) {
     this.state.value = params.defaultValue;
+
+    this.setValue = new Proxy(this._setValue, params?.setValueHandler ?? {});
   }
 
-  setValue = (value: number) => {
+  _setValue = (value: number) => {
     this.state.value = value;
     console.log("setValue", this.state.value);
   };
+
+  setValue = this._setValue;
 }
 
 export class AppStore extends ControlStore {
   constructor(params: Params) {
     super(params);
   }
-
-  //TODO как то нужно перехватить setValue
 }
